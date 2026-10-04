@@ -32,6 +32,18 @@ table th, .table th, thead th {
 table th a, .table th a {
   color: #ffffff !important;
 }
+/* 题面/讨论正文(.typo)中的表格恢复上游浅色:深色表头在白色题面里过重,
+   且会压掉题面作者可能自带的颜色约定 */
+.typo table th {
+  background: #fbfbfb !important;
+  color: #666666 !important;
+}
+.typo table thead th {
+  background: #f1f1f1 !important;
+}
+.typo table th a {
+  color: #2a5caa !important;
+}
 .section {
   border: 1px solid #d8d8d8 !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;

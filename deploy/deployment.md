@@ -43,14 +43,16 @@ rewrite / /home.html
 ```caddyfile
 @cacheable {
     path *.woff2 *.png *.chunk.js *.worker.js *.css *.svg *.ico
-    not path /theme-*          # 主题 css 单独 10 分钟，保证 overlay 及时生效
+    not path /theme-* /swpu-*.woff2   # 主题 css 与品牌字体单独短缓存
 }
 header @cacheable Cache-Control "public, max-age=604800"
-header /theme-*.css Cache-Control "max-age=600"
+header /theme-*.css Cache-Control "max-age=600"       # overlay 及时生效
+header /swpu-*.woff2 Cache-Control "max-age=600"      # 子集扩充后及时生效
 header /home.html Cache-Control "no-cache"
 ```
 
 > Caddy 的 encode 中间件会剥离 ETag，没有显式 Cache-Control 时浏览器行为不可控。
+> `swpu-*.woff2` 文件名固定但内容会随子集扩充变化，若并入 7 天缓存，重新生成后旧字形最长残留一周。
 
 ## 4. 跨境/弱网优化
 
@@ -82,6 +84,7 @@ ufw allow 443/udp
 ## 6. 字体与图标
 
 - 展示字体子集化：`python scripts/subset_fonts.py <zcool.ttf> <jbmono.ttf> <landing目录>`（需 fonttools + brotli），产出约 100KB 的 woff2
+- 注意 `swpu-mono.woff2` 同时是 OJ 全站 code/pre 字体（`theme/02-polish.css`），子集已覆盖题面代码常用符号（箭头/数学运算符/制表框线等）；需要扩充时改 `subset_fonts.py` 里的 `unicodes` 重新生成并上传即可，无需改 CSS
 - 图标全套由 Pillow 渲染（4x 超采样）：favicon 96px、logo 192px、apple-touch 180px、android-chrome 192px
 
 ## 7. UI 重建后的重放清单

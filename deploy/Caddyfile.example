@@ -16,7 +16,7 @@ swpuacm.xyz, www.swpuacm.xyz {
 
   @cacheable {
     path *.woff2 *.png *.chunk.js *.worker.js *.css *.svg *.ico
-    not path /theme-*
+    not path /theme-* /swpu-*.woff2
   }
   header @cacheable Cache-Control "public, max-age=604800"
   @cacheable2 {
@@ -25,6 +25,8 @@ swpuacm.xyz, www.swpuacm.xyz {
   header @cacheable2 Cache-Control "public, max-age=604800"
   header /home.html Cache-Control "no-cache"
   header /theme-*.css Cache-Control "max-age=600"
+  # 品牌字体文件名固定但内容会随子集扩充变化,短缓存避免旧字形最长残留 7 天
+  header /swpu-*.woff2 Cache-Control "max-age=600"
   log {
     output file /data/access.log {
       roll_size 1gb
